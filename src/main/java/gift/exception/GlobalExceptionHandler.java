@@ -15,6 +15,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -24,6 +25,25 @@ public class GlobalExceptionHandler {
   public GlobalExceptionHandler(WishlistService wishlistService) {
     this.wishlistService = wishlistService;
   }
+
+  // 잘못된 상품형식을 입력하는 경우
+  @ExceptionHandler(ValidationException.class)
+  public String handleValidationException(ValidationException ex, Model model,
+                                          HttpServletResponse response) {
+    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    // BindingResult에서 에러 메시지 추출
+    BindingResult bindingResult = ex.getBindingResult();
+    model.addAttribute("errors", bindingResult.getAllErrors()); // 에러 메시지를 모델에 추가
+
+    // 검증 실패한 상품 객체를 모델에 다시 추가
+    model.addAttribute("product", ex.getBindingResult().getTarget());
+
+    // 상품 추가 폼으로 돌아가도록 처리
+    return "admin/product-form"; // 상품 등록 폼으로 돌아가도록 반환
+  }
+
+
+
 
   // ✅ 이메일/비밀번호 형식 오류 등 바인딩 예외
   @ExceptionHandler(BindException.class)

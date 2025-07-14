@@ -21,7 +21,7 @@
     <tbody>
     <tr th:each="product : ${products}">
       <td><img th:src="${product.imageUrl}" class="img-thumbnail" style="width: 80px;"/></td>
-      <td><a th:href="@{'/api/products/' + ${product.id}}" th:text="${product.name}"></a></td>
+      <td><a th:text="${product.name}"></a></td>
       <td th:text="${product.price} + '원'"></td>
       <td>
         <form th:action="@{|/api/products/${product.id}/wishlist|}" method="post">

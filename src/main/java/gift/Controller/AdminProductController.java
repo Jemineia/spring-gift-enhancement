@@ -65,18 +65,23 @@ public class AdminProductController {
   // ✅ 상품 추가
   @PostMapping
   public String addProduct(@Valid @ModelAttribute("product") ProductDto productDto,
-      BindingResult bindingResult,
-      Model model) {
+                           BindingResult bindingResult,
+                           Model model) {
 
+    // 부적합한 상품명 체크
     containsProhibitedName(productDto, bindingResult);
 
     if (bindingResult.hasErrors()) {
-      throw new ValidationException(bindingResult);
+      model.addAttribute("product", productDto); // 검증 오류가 있을 경우, 모델에 product를 담아줌
+      throw new ValidationException(bindingResult); // 검증 예외를 던짐
     }
 
+    // 상품 저장
     productService.save(productDto.toEntity());
-    return "redirect:/admin/products";
+    return "redirect:/admin/products"; // 성공 시 목록으로 리다이렉트
   }
+
+
 
 
   // ✅ 상품 수정
