@@ -1,5 +1,6 @@
 package gift.model;
 
+
 public class WishItem {
 
   private Long memberId;

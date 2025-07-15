@@ -27,19 +27,18 @@ public class ProductService {
     return productRepository.save(product);
   }
 
-  public Optional<Product> update(Long id, Product product) {
-    Optional<Product> existing = productRepository.findById(id);
-    if (existing.isPresent()) {
-      productRepository.update(product);
-      return Optional.of(product);
-    }
-    return Optional.empty();
+  public Optional<Product> update(Long id, Product updateProduct) {
+    return productRepository.findById(id).map(existing -> {
+      existing.setName(updateProduct.getName());
+      existing.setPrice(updateProduct.getPrice());
+      existing.setImageUrl(updateProduct.getImageUrl());
+      return productRepository.save(existing);
+    });
   }
 
   public boolean delete(Long id) {
-    Optional<Product> existing = productRepository.findById(id);
-    if (existing.isPresent()) {
-      productRepository.delete(id);
+    if (productRepository.existsById(id)) {
+      productRepository.deleteById(id);
       return true;
     }
     return false;
