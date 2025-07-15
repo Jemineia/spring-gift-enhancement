@@ -1,46 +1,56 @@
 package gift.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "wish")
 public class WishItem {
 
-  private Long memberId;
-  private Long productId;
-  private String productName;
-  private int price;
-  private int quantity;
-  private String imageUrl;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  public WishItem(Long memberId, Long productId, String productName, int price, int quantity, String imageUrl) {
-    this.memberId = memberId;
-    this.productId = productId;
-    this.productName = productName;
-    this.price = price;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id", nullable = false)
+  private Member member;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "product_id", nullable = false)
+  private Product product;
+
+  @Column(nullable = false)
+  private int quantity = 1;
+
+  public WishItem(){}
+  public WishItem(Member member, Product product, int quantity) {
+    this.member = member;
+    this.product = product;
     this.quantity = quantity;
-    this.imageUrl = imageUrl;
+  }
+  public Long getId() {
+    return id;
   }
 
-  public Long getMemberId() {
-    return memberId;
+  public Member getMember() {
+    return member;
   }
-  public Long getProductId() {
-    return productId;
+
+  public void setMember(Member member) {
+    this.member = member;
   }
-  public String getProductName() {
-    return productName;
+
+  public Product getProduct() {
+    return product;
   }
-  public int getPrice() {
-    return price;
+
+  public void setProduct(Product product) {
+    this.product = product;
   }
+
   public int getQuantity() {
     return quantity;
   }
-  public int getTotalPrice() {
-    return price * quantity;
-  }
-  public String getImageUrl() {
-    return imageUrl;
-  }
 
-  //수량 조절
   public void setQuantity(int quantity) {
     this.quantity = quantity;
   }

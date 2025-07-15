@@ -26,32 +26,28 @@
       </thead>
       <tbody>
       <tr th:each="item : ${wishList}">
-        <td th:text="${item.productId}"></td>
+        <td th:text="${item.product.id}"></td>
         <td>
-          <img th:src="${item.imageUrl}" alt="상품 이미지" width="80" class="img-thumbnail"/>
+          <img th:src="${item.product.imageUrl}" alt="상품 이미지" width="80" class="img-thumbnail"/>
         </td>
-        <td th:text="${item.productName}"></td>
-        <td th:text="${item.price} + '원'"></td>
+        <td th:text="${item.product.name}"></td>
+        <td th:text="${item.product.price} + '원'"></td>
         <td th:text="${item.quantity}"></td>
         <td>
-          <form th:action="@{|/wishlist/${item.productId}/quantity|}" method="post" class="d-flex">
+          <form th:action="@{|/wishlist/${item.product.id}/quantity|}" method="post" class="d-flex">
             <input type="hidden" name="_method" value="put" />
-
             <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="form-control form-control-sm me-2" style="width: 80px;" />
             <button type="submit" class="btn btn-sm btn-outline-success">변경</button>
           </form>
-
         </td>
         <td>
-          <a th:href="@{|/api/wishlist/${item.productId}|}"
-             class="btn btn-sm btn-outline-primary">상세보기</a>
+          <a th:href="@{|/api/wishlist/${item.product.id}|}" class="btn btn-sm btn-outline-primary">상세보기</a>
         </td>
         <td>
-          <form th:action="@{|/api/wishlist/${item.productId}/delete|}" method="post">
+          <form th:action="@{|/api/wishlist/${item.product.id}/delete|}" method="post">
             <input type="hidden" name="_method" value="delete" />
             <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
           </form>
-
         </td>
       </tr>
       <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
