@@ -172,7 +172,7 @@ class WishlistControllerTest {
       fail("존재하지 않는 찜 상품 삭제 시 예외가 발생해야 합니다.");
     } catch (RestClientResponseException e) {
       assertThat(e.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-      assertThat(e.getResponseBodyAsString()).contains("삭제할 찜 항목이 존재하지 않습니다"); // 서비스 예외 메시지 확인
+      assertThat(e.getResponseBodyAsString()).contains("상품이 존재하지 않습니다"); // 서비스 예외 메시지 확인
     }
   }
 }
