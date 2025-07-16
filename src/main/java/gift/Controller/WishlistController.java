@@ -6,6 +6,10 @@ import gift.model.WishItem;
 import gift.service.WishlistService;
 import gift.util.LoginMember;
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +27,15 @@ public class WishlistController {
 
   // ✅ 전체 찜 목록 조회
   @GetMapping
-  public String getWishlist(@LoginMember Member member, Model model) {
-    List<WishItem> wishList = wishlistService.getWishList(member.getId());
-    model.addAttribute("wishList", wishList);
+  public String getWishlist(
+          @RequestParam(defaultValue = "0")  int page,
+          @RequestParam(defaultValue = "1") int size,
+          @LoginMember Member member, Model model) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<WishItem> wishList = wishlistService.getWishList(member.getId(), pageable);
+
+    model.addAttribute("wishList", wishList.getContent());
+    model.addAttribute("page", wishList);
     return "wishlist/list"; // list.html
   }
 

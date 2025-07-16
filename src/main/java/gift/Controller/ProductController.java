@@ -40,8 +40,8 @@ public class ProductController {
     Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
     Page<Product> products = productService.findAll(pageable);
 
-    model.addAttribute("products", products);
-    model.addAttribute("page", page);
+    model.addAttribute("products", products.getContent());
+    model.addAttribute("page", products);
 
     return "product/list";  // product/list.html 렌더링
   }

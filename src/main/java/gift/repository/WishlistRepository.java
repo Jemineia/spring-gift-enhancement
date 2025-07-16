@@ -6,6 +6,8 @@ import gift.model.WishItem;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,7 +18,7 @@ import java.util.*;
 public interface WishlistRepository extends JpaRepository<WishItem, Long> {
   Optional<WishItem> findByMemberAndProduct(Member member, Product product);
 
-  List<WishItem> findAllByMember(Member member);
+  Page<WishItem> findAllByMember(Member member, Pageable pageable);
 
   void deleteByMemberAndProduct(Member member, Product product);
 

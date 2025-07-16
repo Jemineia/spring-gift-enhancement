@@ -8,6 +8,10 @@ import gift.util.LoginMember;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -90,16 +94,18 @@ public class GlobalExceptionHandler {
   // 위시리스트 수량이 0 이하인 경우
   @ExceptionHandler(InvalidQuantityException.class)
   public String handleInvalidQuantity(InvalidQuantityException ex,
-      HttpServletRequest request,
-      Model model,
-      HttpServletResponse response,
-      @LoginMember Member member) {
+                                      HttpServletRequest request,
+                                      Model model,
+                                      HttpServletResponse response,
+                                      @LoginMember Member member,
+                                      @PageableDefault(size = 1)Pageable pageable) {
 
     response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 상태코드 유지
 
     // 다시 wishlist를 채워서 렌더링
-    List<WishItem> wishList = wishlistService.getWishList(member.getId());
-    model.addAttribute("wishList", wishList);
+    Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
+    model.addAttribute("wishList", wishPage.getContent());
+    model.addAttribute("page", wishPage);
     model.addAttribute("error", ex.getMessage());
 
     return "wishlist/list"; // 리디렉션 아님, 직접 렌더링
@@ -107,42 +113,54 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)
   public String handleIllegalArgument(IllegalArgumentException ex,
-      Model model,
-      HttpServletResponse response,
-      @LoginMember Member member) {
+                                      Model model,
+                                      HttpServletResponse response,
+                                      @LoginMember Member member,
+                                      @PageableDefault(size = 1) Pageable pageable) {
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
-    // 다시 wishlist를 채워서 렌더링
-    List<WishItem> wishList = wishlistService.getWishList(member.getId());
-    model.addAttribute("wishList", wishList);
+    Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
+    model.addAttribute("wishList", wishPage.getContent());
+    model.addAttribute("page", wishPage);
     model.addAttribute("error", ex.getMessage());
+
     return "wishlist/list";
   }
+
 
   @ExceptionHandler(NotFoundDeletewishlistException.class)
-  public String handleRuntimeException(RuntimeException ex,
-      HttpServletResponse response,
-      Model model ,
-      @LoginMember Member member) {
+  public String handleNotFoundDeletewishlistException(NotFoundDeletewishlistException ex,
+                                                      HttpServletResponse response,
+                                                      Model model,
+                                                      @LoginMember Member member,
+                                                      @PageableDefault(size = 1) Pageable pageable) {
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-    List<WishItem> wishList = wishlistService.getWishList(member.getId());
-    model.addAttribute("wishList", wishList);
+
+    Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
+    model.addAttribute("wishList", wishPage.getContent());
+    model.addAttribute("page", wishPage);
     model.addAttribute("error", ex.getMessage());
+
     return "wishlist/list";
   }
+
 
   @ExceptionHandler(DuplicateWishItemException.class)
   public String handleDuplicateWishItem(DuplicateWishItemException ex,
                                         Model model,
                                         HttpServletResponse response,
-                                        @LoginMember Member member) {
+                                        @LoginMember Member member,
+                                        @PageableDefault(size = 1) Pageable pageable) {
     response.setStatus(HttpServletResponse.SC_CONFLICT); // 409 Conflict
 
-    List<WishItem> wishList = wishlistService.getWishList(member.getId());
-    model.addAttribute("wishList", wishList);
+    Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
+    model.addAttribute("wishList", wishPage.getContent());
+    model.addAttribute("page", wishPage);
     model.addAttribute("error", ex.getMessage());
+
     return "wishlist/list";
   }
+
 
 
 }

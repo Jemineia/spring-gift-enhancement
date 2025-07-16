@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,7 +33,7 @@ public class AdminProductController {
           @RequestParam(defaultValue = "0") int page,
           @RequestParam(defaultValue = "1") int size,
           Model model) {
-    Page<Product> productPage = productService.findAll(PageRequest.of(page, size));
+    Page<Product> productPage = productService.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
     List<ProductDto> dtoList = productPage.getContent().stream()
         .filter(Objects::nonNull) // ← 이중 체크
         .map(ProductDto::from)

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,10 +44,10 @@ public class WishlistService {
   }
 
   // ✅ 전체 찜 목록 조회
-  public List<WishItem> getWishList(Long memberId) {
+  public Page<WishItem> getWishList(Long memberId, Pageable pageable) {
     Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
-    return wishlistRepository.findAllByMember(member);
+    return wishlistRepository.findAllByMember(member, pageable);
   }
 
   // ✅ 찜 추가

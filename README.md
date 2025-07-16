@@ -9,4 +9,5 @@
 
 ### Step2 [ 07/16 ]
 - [x] 상품 목록 Pagination 적용
-- [ ] 위시리스트 Pagination 적용
+- [x] 위시리스트 Pagination 적용
+- [ ] Step1 코드 리뷰 수정
