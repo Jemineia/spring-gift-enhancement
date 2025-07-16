@@ -67,4 +67,10 @@ public class Product {
   public String prohibitedMessage() {
     return "'카카오'는 담당 MD 협의 시에만 사용할 수 있습니다.";
   }
+
+  public void update(String name, int price, String imageUrl) {
+    this.name = name;
+    this.price = price;
+    this.imageUrl = imageUrl;
+  }
 }

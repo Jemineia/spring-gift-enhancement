@@ -2,7 +2,7 @@ package gift.service;
 
 import gift.model.Product;
 import gift.repository.ProductRepository;
-import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -30,13 +30,10 @@ public class ProductService {
     return productRepository.save(product);
   }
 
-  public Optional<Product> update(Long id, Product updateProduct) {
-    return productRepository.findById(id).map(existing -> {
-      existing.setName(updateProduct.getName());
-      existing.setPrice(updateProduct.getPrice());
-      existing.setImageUrl(updateProduct.getImageUrl());
-      return productRepository.save(existing);
-    });
+  public void update(Long id, Product updateProduct) {
+    Product existing = productRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+    existing.update(updateProduct.getName(), updateProduct.getPrice(), updateProduct.getImageUrl());
   }
 
   public boolean delete(Long id) {
