@@ -13,6 +13,6 @@
 - [ ] Step1 코드 리뷰 수정
   - [x] 회원가입시, Member객체 생성시 id없는 생성자 만들기
   - [ ] IllegalArgumentException -> EntityNotFoundException 으로 변경
-  - [ ] JpaTest AssertAll() 적용
+  - [x] JpaTest AssertAll() 적용
   - [x] 사용하지 않는 반환값 void로 변경
   - [x] ProductService setter 대신 다른 method 사용
