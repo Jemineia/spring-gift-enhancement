@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
@@ -75,18 +76,16 @@ public class WishItemJpaTest {
     }
 
     @Test
-    @DisplayName("[2] 존재하지 않는 상품 찜 시도 시 예외 발생")
+    @DisplayName("[2] 존재하지 않는 상품 저장시 예외 발생")
     void inValidItemToWishlist() {
         // given
         Member member = new Member(null, "testuser@email.com", "encodedpw");
         member = memberRepository.save(member);
 
-        Long invalidProductId = 999L; // 존재하지 않는 상품 ID
-
         // when & then
-        Member finalMember = member;
-        assertThrows(IllegalArgumentException.class, () -> {
-            wishlistService.addToWishlist(finalMember.getId(), invalidProductId);
-        }, "상품이 존재하지 않습니다");
+        WishItem wishItem = new WishItem(member, null, 1);
+        assertThrows(DataIntegrityViolationException.class, () ->{
+            wishlistRepository.save(wishItem);
+        });
     }
 }

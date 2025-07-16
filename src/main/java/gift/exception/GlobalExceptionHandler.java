@@ -5,6 +5,7 @@ import gift.model.Member;
 import gift.model.WishItem;
 import gift.service.WishlistService;
 import gift.util.LoginMember;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -161,6 +162,20 @@ public class GlobalExceptionHandler {
     return "wishlist/list";
   }
 
+  @ExceptionHandler(EntityNotFoundException.class)
+  public String handleEntityNotFoundException(EntityNotFoundException ex,
+                                              Model model,
+                                              HttpServletResponse response,
+                                              @LoginMember Member member,
+                                              @PageableDefault(size = 1) Pageable pageable){
+    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
+    model.addAttribute("wishList", wishPage.getContent());
+    model.addAttribute("page", wishPage);
+    model.addAttribute("error", ex.getMessage());
+
+    return "wishlist/list";
+  }
 
 
 }
