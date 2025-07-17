@@ -55,6 +55,25 @@
 
       </tbody>
     </table>
+    <nav th:if="${page.totalPages > 1}">
+      <ul class="pagination justify-content-center mt-4">
+        <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+          <a class="page-link" th:href="@{|/api/wishlist?page=${page.number - 1}&size=${page.size}|}">이전</a>
+        </li>
+
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+            th:classappend="${i == page.number} ? 'active'">
+          <a class="page-link"
+             th:href="@{|/api/wishlist?page=${i}&size=${page.size}|}"
+             th:text="${i + 1}"></a>
+        </li>
+
+        <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+          <a class="page-link" th:href="@{|/api/wishlist?page=${page.number + 1}&size=${page.size}|}">다음</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </div>
 </body>

@@ -7,16 +7,19 @@ import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
 import gift.service.WishlistService;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
@@ -54,26 +57,35 @@ public class WishItemJpaTest {
         //when
         Optional<WishItem> found = wishlistRepository.findByMemberAndProduct(member, product);
 
-        //then
-        assertThat(found).isPresent();
-        assertThat(found.get().getQuantity()).isEqualTo(996);
-        assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com");
-        assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1");
+        //then - assertAll을 적용한 방법
+        assertAll(
+                () -> assertThat(found).isPresent(),
+                () -> assertThat(found.get().getQuantity()).isEqualTo(996),
+                () -> assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com"),
+                () -> assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1")
+        );
+        //then - softassertion 적용한 방법
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(found).isPresent();
+        softly.assertThat(found.get().getQuantity()).isEqualTo(996);
+        softly.assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com");
+        softly.assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1");
+
+        softly.assertAll();
     }
 
     @Test
-    @DisplayName("[2] 존재하지 않는 상품 찜 시도 시 예외 발생")
+    @DisplayName("[2] 존재하지 않는 상품 저장시 예외 발생")
     void inValidItemToWishlist() {
         // given
         Member member = new Member(null, "testuser@email.com", "encodedpw");
         member = memberRepository.save(member);
 
-        Long invalidProductId = 999L; // 존재하지 않는 상품 ID
-
         // when & then
-        Member finalMember = member;
-        assertThrows(IllegalArgumentException.class, () -> {
-            wishlistService.addToWishlist(finalMember.getId(), invalidProductId);
-        }, "상품이 존재하지 않습니다");
+        WishItem wishItem = new WishItem(member, null, 1);
+        assertThrows(DataIntegrityViolationException.class, () ->{
+            wishlistRepository.save(wishItem);
+        });
     }
 }

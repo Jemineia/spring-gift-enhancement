@@ -31,6 +31,28 @@
     </tr>
     </tbody>
   </table>
+  <nav th:if="${page.totalPages > 1}">
+    <ul class="pagination justify-content-center mt-4">
+      <!-- 이전 버튼 -->
+      <li class="page-item" th:classappend="${page.first}? 'disabled'">
+        <a class="page-link" th:href="@{|/api/products?page=${page.number - 1}&size=${page.size}|}">이전</a>
+      </li>
+
+      <!-- 페이지 번호 -->
+      <li class="page-item"
+          th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+          th:classappend="${i == page.number}? 'active'">
+        <a class="page-link"
+           th:href="@{|/api/products?page=${i}&size=${page.size}|}"
+           th:text="${i + 1}"></a>
+      </li>
+
+      <!-- 다음 버튼 -->
+      <li class="page-item" th:classappend="${page.last}? 'disabled'">
+        <a class="page-link" th:href="@{|/api/products?page=${page.number + 1}&size=${page.size}|}">다음</a>
+      </li>
+    </ul>
+  </nav>
 </div>
 </body>
 </html>

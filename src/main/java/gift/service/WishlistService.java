@@ -12,7 +12,10 @@ import gift.repository.WishlistRepository;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,28 +36,28 @@ public class WishlistService {
   // ✅ 개별 찜 항목 조회
   public WishItem getWishItem(Long memberId, Long productId) {
     Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
+            .orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다"));
     Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다"));
+            .orElseThrow(() -> new EntityNotFoundException("상품이 존재하지 않습니다"));
 
     return wishlistRepository.findByMemberAndProduct(member, product)
-            .orElseThrow(() -> new IllegalArgumentException("찜 항목이 존재하지 않습니다"));
+            .orElseThrow(() -> new EntityNotFoundException("찜 항목이 존재하지 않습니다"));
   }
 
   // ✅ 전체 찜 목록 조회
-  public List<WishItem> getWishList(Long memberId) {
+  public Page<WishItem> getWishList(Long memberId, Pageable pageable) {
     Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
-    return wishlistRepository.findAllByMember(member);
+            .orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다"));
+    return wishlistRepository.findAllByMember(member, pageable);
   }
 
   // ✅ 찜 추가
   @Transactional
   public void addToWishlist(Long memberId, Long productId) {
     Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
+            .orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다"));
     Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다"));
+            .orElseThrow(() -> new EntityNotFoundException("상품이 존재하지 않습니다"));
 
     if (wishlistRepository.existsByMemberAndProduct(member, product)) {
       throw new DuplicateWishItemException("이미 찜한 상품입니다.");
@@ -80,9 +83,9 @@ public class WishlistService {
   @Transactional
   public void deleteWishListItem(Long memberId, Long productId) {
     Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
+            .orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다"));
     Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다"));
+            .orElseThrow(() -> new EntityNotFoundException("상품이 존재하지 않습니다"));
 
     WishItem wish = wishlistRepository.findByMemberAndProduct(member, product)
             .orElseThrow(() -> new NotFoundDeletewishlistException("삭제할 찜 항목이 존재하지 않습니다."));

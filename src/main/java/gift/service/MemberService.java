@@ -26,7 +26,7 @@ public class MemberService {
       throw new DuplicateEmailException("이미 존재하는 이메일입니다");
     }
     String encoded = passwordEncoder.encode(password);
-    Member saved = memberRepository.save(new Member(null, email, encoded));
+    Member saved = memberRepository.save(new Member(email, encoded));
     return jwtUtil.createToken(saved.getEmail());
   }
 
