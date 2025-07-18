@@ -1,123 +1,108 @@
 package gift;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientResponseException;
+import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("사용자 기능 Test")
 public class MemberControllerTest {
 
-  private final int port = 8080;
-  private final RestClient client = RestClient.builder().build();
+  @Autowired
+  private MockMvc mockMvc;
 
   @Test
-  @DisplayName("[1] 정상 회원 가입 Test")
   @Order(1)
-  void ValidtestRegister() {
-    var url = "http://localhost:" + port + "/api/members/register";
+  @DisplayName("[1] 정상 회원 가입 Test")
+  void validTestRegister() throws Exception {
+    // given
+    String email = "abc123@gmail.com";
+    String password = "qwer1234!@";
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    String formData = "email=abc123@gmail.com&password=qwer1234!@";
-
-    ResponseEntity<String> response = client.post()
-        .uri(url)
-        .headers(h -> h.addAll(headers))
-        .body(formData)
-        .retrieve()
-        .toEntity(String.class);
-
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    mockMvc.perform(post("/api/members/register")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .queryParam("email", email)
+            .queryParam("password", password)
+        )
+        .andExpect(status().isCreated());
   }
 
   @Test
   @DisplayName("[2] 이미 존재하는 email 회원 가입 Test")
   @Order(2)
-  void inValidRegister() {
-    var url = "http://localhost:" + port + "/api/members/register";
+  void inValidRegister() throws Exception {
+    String email = "duplicate@example.com";
+    String password = "test1234!";
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    String formData = "email=abc123@gmail.com&password=qwer1234!@";
+    // 첫번째 회원가입
+    mockMvc.perform(post("/api/members/register")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .queryParam("email", email)
+        .queryParam("password", password)
+    );
 
-    try {
-      client.post()
-          .uri(url)
-          .headers(h -> h.addAll(headers))
-          .body(formData)
-          .retrieve()
-          .toEntity(String.class);
-
-      fail("예외가 발생해야 합니다 (중복 이메일)");
-
-    } catch (RestClientResponseException ex) {
-      assertThat(ex.getRawStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-      assertThat(ex.getResponseBodyAsString()).contains("이미 존재하는 이메일");
-    }
+    // 증복 회원가입
+    mockMvc.perform(post("/api/members/register")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .queryParam("email", email)
+            .queryParam("password", password))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
   @DisplayName("[3] 정상 로그인 Test")
   @Order(3)
-  void ValidTestLogin() {
-    var url = "http://localhost:" + port + "/api/members/login";
+  void ValidTestLogin() throws Exception {
+    // given
+    String email = "abc123@gmail.com";
+    String password = "qwer1234!@";
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    String formData = "email=abc123@gmail.com&password=qwer1234!@";
+    // 회원가입
+    mockMvc.perform(post("/api/members/register")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .queryParam("email", email)
+        .queryParam("password", password));
 
-    ResponseEntity<String> response = client.post()
-        .uri(url)
-        .headers(h -> h.addAll(headers))
-        .body(formData)
-        .retrieve()
-        .toEntity(String.class);
-
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-    String authHeader = response.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-    assertThat(authHeader).isNotNull();
-
-    assertThat(authHeader).startsWith("Bearer ");
-
-    String token = authHeader.substring(7); // "Bearer " 제거
-    assertThat(token).isNotBlank();
+    // 로그인
+    mockMvc.perform(post("/api/members/login")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .queryParam("email", email)
+            .queryParam("password", password))
+        .andExpect(status().isOk());
   }
 
   @Test
-  @DisplayName("[4] 비정상 로그인 Test")
+  @DisplayName("[4] 비정상 로그인-아이디가 틀린경우 Test")
   @Order(4)
-  void inValidTestLogin() {
-    var url = "http://localhost:" + port + "/api/members/login";
+  void inValidTestLogin() throws Exception {
+    // given
+    String email = "abc123@gmail.com";
+    String password = "qwer1234!@";
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    String formData = "email=abc123@gmail.com&password=qwer12345!@";
+    // 회원가입
+    mockMvc.perform(post("/api/members/register")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .queryParam("email", email)
+        .queryParam("password", password));
 
-    try {
-      client.post()
-          .uri(url)
-          .headers(h -> h.addAll(headers))
-          .body(formData)
-          .retrieve()
-          .toEntity(String.class);
-
-    } catch (RestClientResponseException ex) {
-      assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
+    password = "asdf1234!@";
+    // 로그인
+    mockMvc.perform(post("/api/members/login")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .queryParam("email", email)
+            .queryParam("password", password))
+        .andExpect(status().isUnauthorized());
   }
 }

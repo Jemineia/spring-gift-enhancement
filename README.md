@@ -29,5 +29,8 @@
 - [x] TestCode 중복 체크 제거
 - [x] 도메인 객체 테스트 코드 작성
 - [ ] Application 실행 안해도 테스트 수행 가능하도록 수정
+  - [x] MemberControllerTest를 MockMvc Test로 수정
+  - [ ] ProductControllerTest를 MockMvc Test로 수정
+  - [ ] WishlistControllerTest를 MockMvc Test로 수정
 </div>
 </details>
