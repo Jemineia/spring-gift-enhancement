@@ -6,12 +6,14 @@ import gift.service.ProductService;
 import gift.service.WishlistService;
 import gift.util.LoginMember;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/api/products")
@@ -28,10 +30,8 @@ public class ProductController {
   // 상품 전체 목록 페이지
   @GetMapping
   public String listProducts(
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "1") int size,
+      @PageableDefault(size = 1) Pageable pageable,
       Model model) {
-    Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
     Page<Product> products = productService.findAll(pageable);
 
     model.addAttribute("products", products.getContent());

@@ -5,8 +5,8 @@ import gift.model.WishItem;
 import gift.service.WishlistService;
 import gift.util.LoginMember;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,10 +30,8 @@ public class WishlistController {
   // ✅ 전체 찜 목록 조회
   @GetMapping
   public String getWishlist(
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "1") int size,
+      @PageableDefault(size = 1) Pageable pageable,
       @LoginMember Member member, Model model) {
-    Pageable pageable = PageRequest.of(page, size);
     Page<WishItem> wishList = wishlistService.getWishList(member.getId(), pageable);
 
     model.addAttribute("wishList", wishList.getContent());

@@ -24,7 +24,7 @@
 <div markdown="1">
 
 - [x] Google Style 적용 및 미사용 import문 최적화
-- [ ] @PageableDefault 공통 적용
+- [x] @PageableDefault 공통 적용
 - [ ] Update Method에 EntityNotFoundException 적용
 - [ ] TestCode 중복 체크 제거
 - [ ] 도메인 객체 테스트 코드 작성
