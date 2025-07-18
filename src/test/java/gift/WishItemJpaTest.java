@@ -12,7 +12,6 @@ import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
 import gift.service.WishlistService;
 import java.util.Optional;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,15 +62,6 @@ public class WishItemJpaTest {
         () -> assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com"),
         () -> assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1")
     );
-    //then - softassertion 적용한 방법
-    SoftAssertions softly = new SoftAssertions();
-
-    softly.assertThat(found).isPresent();
-    softly.assertThat(found.get().getQuantity()).isEqualTo(996);
-    softly.assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com");
-    softly.assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1");
-
-    softly.assertAll();
   }
 
   @Test
