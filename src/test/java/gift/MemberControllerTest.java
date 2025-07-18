@@ -3,9 +3,16 @@ package gift;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
@@ -101,7 +108,7 @@ public class MemberControllerTest {
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     String formData = "email=abc123@gmail.com&password=qwer12345!@";
 
-    try{
+    try {
       client.post()
           .uri(url)
           .headers(h -> h.addAll(headers))
@@ -109,7 +116,7 @@ public class MemberControllerTest {
           .retrieve()
           .toEntity(String.class);
 
-    }catch(RestClientResponseException ex){
+    } catch (RestClientResponseException ex) {
       assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
   }

@@ -1,7 +1,12 @@
 package gift.model;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "member")
@@ -17,7 +22,8 @@ public class Member {
   @Column(nullable = false)
   private String password;
 
-  public Member(){}
+  public Member() {
+  }
 
   public Member(Long id, String email, String password) {
     this.id = id;
@@ -30,7 +36,10 @@ public class Member {
     this.password = password;
   }
 
-  public Long getId() {return id;}
+  public Long getId() {
+    return id;
+  }
+
   public void setId(Long id) {
     this.id = id;
   }
@@ -38,6 +47,7 @@ public class Member {
   public String getEmail() {
     return email;
   }
+
   public void setEmail(String email) {
     this.email = email;
   }
@@ -45,6 +55,7 @@ public class Member {
   public String getPassword() {
     return password;
   }
+
   public void setPassword(String password) {
     this.password = password;
   }

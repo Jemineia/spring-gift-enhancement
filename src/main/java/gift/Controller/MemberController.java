@@ -1,16 +1,10 @@
 package gift.Controller;
 
 import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.model.Member;
 import gift.jwt.JwtUtil;
 import gift.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.Map;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,27 +15,27 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequestMapping("/api/members")
 public class MemberController {
+
   private final MemberService memberService;
   private final JwtUtil jwtUtil;
 
-  public MemberController(MemberService memberService,  JwtUtil jwtUtil) {
+  public MemberController(MemberService memberService, JwtUtil jwtUtil) {
     this.memberService = memberService;
     this.jwtUtil = jwtUtil;
   }
 
   // 회원가입 기능
   @GetMapping("/register")
-  public String showRegisterForm(Model model){
+  public String showRegisterForm(Model model) {
     model.addAttribute("memberRequestDto", new MemberRequestDto());
     return "user/register";
   }
+
   @PostMapping("/register")
   public ResponseEntity<Void> register(@Valid @ModelAttribute MemberRequestDto req,
       BindingResult bindingResult) throws BindException {
@@ -58,7 +52,7 @@ public class MemberController {
 
   // 로그인 기능
   @GetMapping("/login")
-  public String showLoginForm(){
+  public String showLoginForm() {
     return "user/login";
   }
 

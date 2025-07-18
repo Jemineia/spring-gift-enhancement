@@ -2,9 +2,7 @@ package gift.service;
 
 import gift.model.Product;
 import gift.repository.ProductRepository;
-
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,7 @@ public class ProductService {
 
   public void update(Long id, Product updateProduct) {
     Product existing = productRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
     existing.update(updateProduct.getName(), updateProduct.getPrice(), updateProduct.getImageUrl());
   }
 

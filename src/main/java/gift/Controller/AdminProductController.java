@@ -8,14 +8,19 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -30,10 +35,11 @@ public class AdminProductController {
   // ✅ 전체 상품 조회
   @GetMapping
   public String adminGetAllProducts(
-          @RequestParam(defaultValue = "0") int page,
-          @RequestParam(defaultValue = "1") int size,
-          Model model) {
-    Page<Product> productPage = productService.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "1") int size,
+      Model model) {
+    Page<Product> productPage = productService.findAll(
+        PageRequest.of(page, size, Sort.by("id").descending()));
     List<ProductDto> dtoList = productPage.getContent().stream()
         .filter(Objects::nonNull) // ← 이중 체크
         .map(ProductDto::from)
@@ -69,8 +75,8 @@ public class AdminProductController {
   // ✅ 상품 추가
   @PostMapping
   public String addProduct(@Valid @ModelAttribute("product") ProductDto productDto,
-                           BindingResult bindingResult,
-                           Model model) {
+      BindingResult bindingResult,
+      Model model) {
 
     // 부적합한 상품명 체크
     containsProhibitedName(productDto, bindingResult);
@@ -86,8 +92,6 @@ public class AdminProductController {
   }
 
 
-
-
   // ✅ 상품 수정
   @PutMapping("/{id}")
   public String updateProduct(@PathVariable Long id,
@@ -97,7 +101,7 @@ public class AdminProductController {
 
     containsProhibitedName(productDto, bindingResult);
 
-    if(bindingResult.hasErrors()) {
+    if (bindingResult.hasErrors()) {
       throw new ValidationException(bindingResult);
     }
 
@@ -109,7 +113,7 @@ public class AdminProductController {
   private void containsProhibitedName(ProductDto productDto, BindingResult bindingResult) {
     Product product = productDto.toEntity();
     // Entity로 바꾸어서 해당 함수를 불러와 가지고있는지 체크 수행
-    if(product.hasProhibitedName()){
+    if (product.hasProhibitedName()) {
       bindingResult.rejectValue("name", "invalid", product.prohibitedMessage());
     }
   }

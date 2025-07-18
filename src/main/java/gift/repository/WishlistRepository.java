@@ -16,6 +16,7 @@ import java.util.*;
 
 @Repository
 public interface WishlistRepository extends JpaRepository<WishItem, Long> {
+
   Optional<WishItem> findByMemberAndProduct(Member member, Product product);
 
   Page<WishItem> findAllByMember(Member member, Pageable pageable);

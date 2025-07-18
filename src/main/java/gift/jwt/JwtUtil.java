@@ -1,11 +1,8 @@
 package gift.jwt;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
@@ -15,11 +12,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
+
   private final Key KEY;
 
   public JwtUtil(@Value("${jwt.secret}") String secret) {
     this.KEY = Keys.hmacShaKeyFor(secret.getBytes());
   }
+
   private static final long EXPIRATION_TIME = 3600; // 1시간 후 만료
 
   // ✅ JWT 생성
@@ -33,6 +32,7 @@ public class JwtUtil {
         .signWith(KEY)
         .compact();
   }
+
   // ✅ JWT 유효성 검사
   public boolean isValidToken(String token) {
     try {

@@ -1,5 +1,9 @@
 package gift;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import gift.model.Member;
 import gift.model.Product;
 import gift.model.WishItem;
@@ -7,6 +11,7 @@ import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
 import gift.service.WishlistService;
+import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,77 +20,71 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @DataJpaTest
 @Import(WishlistService.class)
 public class WishItemJpaTest {
-    @Autowired
-    MemberRepository memberRepository;
 
-    @Autowired
-    ProductRepository productRepository;
+  @Autowired
+  MemberRepository memberRepository;
 
-    @Autowired
-    WishlistRepository wishlistRepository;
+  @Autowired
+  ProductRepository productRepository;
 
-    @Autowired
-    WishlistService wishlistService;
+  @Autowired
+  WishlistRepository wishlistRepository;
 
-    @Test
-    @DisplayName("[1] 찜 상품 정상 저장 & 조회")
-    void saveAndFindWishItem(){
-        //given
-        Member member = new Member(null, "abc123@gmail.com", "qwer1234!");
-        member = memberRepository.save(member);
+  @Autowired
+  WishlistService wishlistService;
 
-        Product product = new Product(null, "테스트용 물건1", 1723, "http://example.com/img.jpg");
-        product = productRepository.save(product);
+  @Test
+  @DisplayName("[1] 찜 상품 정상 저장 & 조회")
+  void saveAndFindWishItem() {
+    //given
+    Member member = new Member(null, "abc123@gmail.com", "qwer1234!");
+    member = memberRepository.save(member);
 
-        WishItem wishItem = new WishItem();
-        wishItem.setProduct(product);
-        wishItem.setMember(member);
-        wishItem.setQuantity(996);
+    Product product = new Product(null, "테스트용 물건1", 1723, "http://example.com/img.jpg");
+    product = productRepository.save(product);
 
-        wishlistRepository.save(wishItem);
+    WishItem wishItem = new WishItem();
+    wishItem.setProduct(product);
+    wishItem.setMember(member);
+    wishItem.setQuantity(996);
 
-        //when
-        Optional<WishItem> found = wishlistRepository.findByMemberAndProduct(member, product);
+    wishlistRepository.save(wishItem);
 
-        //then - assertAll을 적용한 방법
-        assertAll(
-                () -> assertThat(found).isPresent(),
-                () -> assertThat(found.get().getQuantity()).isEqualTo(996),
-                () -> assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com"),
-                () -> assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1")
-        );
-        //then - softassertion 적용한 방법
-        SoftAssertions softly = new SoftAssertions();
+    //when
+    Optional<WishItem> found = wishlistRepository.findByMemberAndProduct(member, product);
 
-        softly.assertThat(found).isPresent();
-        softly.assertThat(found.get().getQuantity()).isEqualTo(996);
-        softly.assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com");
-        softly.assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1");
+    //then - assertAll을 적용한 방법
+    assertAll(
+        () -> assertThat(found).isPresent(),
+        () -> assertThat(found.get().getQuantity()).isEqualTo(996),
+        () -> assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com"),
+        () -> assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1")
+    );
+    //then - softassertion 적용한 방법
+    SoftAssertions softly = new SoftAssertions();
 
-        softly.assertAll();
-    }
+    softly.assertThat(found).isPresent();
+    softly.assertThat(found.get().getQuantity()).isEqualTo(996);
+    softly.assertThat(found.get().getMember().getEmail()).isEqualTo("abc123@gmail.com");
+    softly.assertThat(found.get().getProduct().getName()).isEqualTo("테스트용 물건1");
 
-    @Test
-    @DisplayName("[2] 존재하지 않는 상품 저장시 예외 발생")
-    void inValidItemToWishlist() {
-        // given
-        Member member = new Member(null, "testuser@email.com", "encodedpw");
-        member = memberRepository.save(member);
+    softly.assertAll();
+  }
 
-        // when & then
-        WishItem wishItem = new WishItem(member, null, 1);
-        assertThrows(DataIntegrityViolationException.class, () ->{
-            wishlistRepository.save(wishItem);
-        });
-    }
+  @Test
+  @DisplayName("[2] 존재하지 않는 상품 저장시 예외 발생")
+  void inValidItemToWishlist() {
+    // given
+    Member member = new Member(null, "testuser@email.com", "encodedpw");
+    member = memberRepository.save(member);
+
+    // when & then
+    WishItem wishItem = new WishItem(member, null, 1);
+    assertThrows(DataIntegrityViolationException.class, () -> {
+      wishlistRepository.save(wishItem);
+    });
+  }
 }

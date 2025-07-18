@@ -1,18 +1,20 @@
 package gift.Controller;
 
-import gift.exception.InvalidQuantityException;
 import gift.model.Member;
 import gift.model.WishItem;
 import gift.service.WishlistService;
 import gift.util.LoginMember;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -28,9 +30,9 @@ public class WishlistController {
   // ✅ 전체 찜 목록 조회
   @GetMapping
   public String getWishlist(
-          @RequestParam(defaultValue = "0")  int page,
-          @RequestParam(defaultValue = "1") int size,
-          @LoginMember Member member, Model model) {
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "1") int size,
+      @LoginMember Member member, Model model) {
     Pageable pageable = PageRequest.of(page, size);
     Page<WishItem> wishList = wishlistService.getWishList(member.getId(), pageable);
 
@@ -52,9 +54,9 @@ public class WishlistController {
   // ✅ 찜 상품 수량 조절
   @PutMapping("/{productId}/quantity")
   public String updateQuantity(@PathVariable Long productId,
-                               @RequestParam("quantity") int quantity,
-                               @LoginMember Member member,
-                               RedirectAttributes redirectAttributes) {
+      @RequestParam("quantity") int quantity,
+      @LoginMember Member member,
+      RedirectAttributes redirectAttributes) {
 
     wishlistService.updateQuantity(member.getId(), productId, quantity);
     redirectAttributes.addFlashAttribute("message", "수량이 변경되었습니다.");
@@ -66,8 +68,8 @@ public class WishlistController {
   // ✅ 찜 상품 삭제
   @DeleteMapping("/{productId}/delete")
   public String deleteWishlistItem(@PathVariable Long productId,
-                                   @LoginMember Member member,
-                                   RedirectAttributes redirectAttributes) {
+      @LoginMember Member member,
+      RedirectAttributes redirectAttributes) {
     wishlistService.deleteWishListItem(member.getId(), productId);
     redirectAttributes.addFlashAttribute("message", "상품이 찜 목록에서 삭제되었습니다");
     return "redirect:/api/wishlist";

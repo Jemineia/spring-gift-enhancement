@@ -31,24 +31,24 @@ class WishlistControllerTest {
   @BeforeEach
   void setUp() {
     this.restClient = RestClient.builder()
-              .baseUrl("http://localhost:" + port)
-              .build();
+        .baseUrl("http://localhost:" + port)
+        .build();
 
     // 최초 회원가입이 아닐 경우에만 회원가입을 진행
     if (!isMemberRegistered) {
-        // 회원가입
+      // 회원가입
       String email = "test999@gmail.com";
       String password = "Qwer1234!";
       String formData = "email=" + email + "&password=" + password;
 
       restClient.post()
-                .uri("/api/members/register")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .body(formData)
-                .retrieve()
-                .toBodilessEntity();
+          .uri("/api/members/register")
+          .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+          .body(formData)
+          .retrieve()
+          .toBodilessEntity();
 
-        // 최초 회원가입 후, 로그인하여 토큰을 얻음
+      // 최초 회원가입 후, 로그인하여 토큰을 얻음
       this.authToken = getAuthToken(email, password);
 
       isMemberRegistered = true;  // 회원가입 완료 상태로 설정
@@ -58,51 +58,51 @@ class WishlistControllerTest {
     }
   }
 
-    private String getAuthToken(String email, String password) {
-      String formData = "email=" + email + "&password=" + password;
+  private String getAuthToken(String email, String password) {
+    String formData = "email=" + email + "&password=" + password;
 
-      ResponseEntity<Void> response = restClient.post()
-              .uri("/api/members/login")
-              .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-              .body(formData)
-              .retrieve()
-              .toBodilessEntity();
+    ResponseEntity<Void> response = restClient.post()
+        .uri("/api/members/login")
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        .body(formData)
+        .retrieve()
+        .toBodilessEntity();
 
-      return response.getHeaders()
-              .getFirst(HttpHeaders.AUTHORIZATION)
-              .replace("Bearer ", "");
+    return response.getHeaders()
+        .getFirst(HttpHeaders.AUTHORIZATION)
+        .replace("Bearer ", "");
+  }
+
+  @Test
+  @Order(1)
+  @DisplayName("[1] 위시리스트 상품 정상 추가")
+  void testWishlistAddSuccess() {
+    ResponseEntity<Void> response = restClient.post()
+        .uri("/api/products/1/wishlist")
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
+        .retrieve()
+        .toBodilessEntity();
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FOUND); // redirect
+  }
+
+  @Test
+  @Order(2)
+  @DisplayName("[2] 중복 찜시 409 Conflict 반환")
+  void testWishlistDuplicateAdd() {
+    try {
+      restClient.post()
+          .uri("/api/products/1/wishlist")
+          .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
+          .retrieve()
+          .toBodilessEntity();
+
+      fail("중복 찜 요청에 대해 예외가 발생해야 합니다.");
+    } catch (RestClientResponseException e) {
+      assertThat(e.getRawStatusCode()).isEqualTo(409);
+      assertThat(e.getResponseBodyAsString()).contains("이미 찜한 상품입니다");
     }
-
-    @Test
-    @Order(1)
-    @DisplayName("[1] 위시리스트 상품 정상 추가")
-    void testWishlistAddSuccess() {
-      ResponseEntity<Void> response = restClient.post()
-              .uri("/api/products/1/wishlist")
-              .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
-              .retrieve()
-              .toBodilessEntity();
-
-      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FOUND); // redirect
-    }
-
-    @Test
-    @Order(2)
-    @DisplayName("[2] 중복 찜시 409 Conflict 반환")
-    void testWishlistDuplicateAdd() {
-      try {
-        restClient.post()
-                .uri("/api/products/1/wishlist")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
-                .retrieve()
-                .toBodilessEntity();
-
-        fail("중복 찜 요청에 대해 예외가 발생해야 합니다.");
-      } catch (RestClientResponseException e) {
-        assertThat(e.getRawStatusCode()).isEqualTo(409);
-        assertThat(e.getResponseBodyAsString()).contains("이미 찜한 상품입니다");}}
-
-
+  }
 
 
   @Test

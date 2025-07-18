@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin/members")
 public class AdminMemberController {
+
   private final MemberService memberService;
+
   public AdminMemberController(MemberService memberService) {
     this.memberService = memberService;
   }
