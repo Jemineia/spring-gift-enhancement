@@ -27,7 +27,7 @@
 - [x] @PageableDefault 공통 적용
 - [x] Update Method에 EntityNotFoundException 적용
 - [x] TestCode 중복 체크 제거
-- [ ] 도메인 객체 테스트 코드 작성
+- [x] 도메인 객체 테스트 코드 작성
 - [ ] Application 실행 안해도 테스트 수행 가능하도록 수정
 </div>
 </details>

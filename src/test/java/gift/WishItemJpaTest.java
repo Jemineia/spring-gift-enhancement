@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 @DataJpaTest
-@Import(WishlistService.class)
 public class WishItemJpaTest {
 
   @Autowired
@@ -31,9 +30,6 @@ public class WishItemJpaTest {
 
   @Autowired
   WishlistRepository wishlistRepository;
-
-  @Autowired
-  WishlistService wishlistService;
 
   @Test
   @DisplayName("[1] 찜 상품 정상 저장 & 조회")
