@@ -10,9 +10,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
   private final JwtInterceptor jwtInterceptor;
   private final LoginMemberArgumentResolver loginMemberArgumentResolver;
-  public WebConfig(JwtInterceptor jwtInterceptor,  LoginMemberArgumentResolver loginMemberArgumentResolver) {
+
+  public WebConfig(JwtInterceptor jwtInterceptor,
+      LoginMemberArgumentResolver loginMemberArgumentResolver) {
     this.jwtInterceptor = jwtInterceptor;
     this.loginMemberArgumentResolver = loginMemberArgumentResolver;
   }
@@ -24,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
   }
 
   @Override
-  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers){
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
     resolvers.add(loginMemberArgumentResolver);
   }
 }

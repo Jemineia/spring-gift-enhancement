@@ -11,6 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
+
   private final JwtUtil jwtUtil;
   private final MemberRepository memberRepository;
 

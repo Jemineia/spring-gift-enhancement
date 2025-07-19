@@ -8,8 +8,6 @@ import gift.util.LoginMember;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +18,6 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -34,7 +31,7 @@ public class GlobalExceptionHandler {
   // 잘못된 상품형식을 입력하는 경우
   @ExceptionHandler(ValidationException.class)
   public String handleValidationException(ValidationException ex, Model model,
-                                          HttpServletResponse response) {
+      HttpServletResponse response) {
     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     // BindingResult에서 에러 메시지 추출
     BindingResult bindingResult = ex.getBindingResult();
@@ -48,8 +45,6 @@ public class GlobalExceptionHandler {
   }
 
 
-
-
   // ✅ 이메일/비밀번호 형식 오류 등 바인딩 예외
   @ExceptionHandler(BindException.class)
   public String handleBindException(BindException ex,
@@ -60,7 +55,8 @@ public class GlobalExceptionHandler {
     BindingResult bindingResult = ex.getBindingResult();
 
     model.addAttribute("memberRequestDto", bindingResult.getTarget());
-    model.addAttribute("org.springframework.validation.BindingResult.memberRequestDto", bindingResult);
+    model.addAttribute("org.springframework.validation.BindingResult.memberRequestDto",
+        bindingResult);
 
     return "user/register";
   }
@@ -95,11 +91,11 @@ public class GlobalExceptionHandler {
   // 위시리스트 수량이 0 이하인 경우
   @ExceptionHandler(InvalidQuantityException.class)
   public String handleInvalidQuantity(InvalidQuantityException ex,
-                                      HttpServletRequest request,
-                                      Model model,
-                                      HttpServletResponse response,
-                                      @LoginMember Member member,
-                                      @PageableDefault(size = 1)Pageable pageable) {
+      HttpServletRequest request,
+      Model model,
+      HttpServletResponse response,
+      @LoginMember Member member,
+      @PageableDefault(size = 1) Pageable pageable) {
 
     response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 상태코드 유지
 
@@ -114,10 +110,10 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)
   public String handleIllegalArgument(IllegalArgumentException ex,
-                                      Model model,
-                                      HttpServletResponse response,
-                                      @LoginMember Member member,
-                                      @PageableDefault(size = 1) Pageable pageable) {
+      Model model,
+      HttpServletResponse response,
+      @LoginMember Member member,
+      @PageableDefault(size = 1) Pageable pageable) {
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
     Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
@@ -131,10 +127,10 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(NotFoundDeletewishlistException.class)
   public String handleNotFoundDeletewishlistException(NotFoundDeletewishlistException ex,
-                                                      HttpServletResponse response,
-                                                      Model model,
-                                                      @LoginMember Member member,
-                                                      @PageableDefault(size = 1) Pageable pageable) {
+      HttpServletResponse response,
+      Model model,
+      @LoginMember Member member,
+      @PageableDefault(size = 1) Pageable pageable) {
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
     Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
@@ -148,10 +144,10 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(DuplicateWishItemException.class)
   public String handleDuplicateWishItem(DuplicateWishItemException ex,
-                                        Model model,
-                                        HttpServletResponse response,
-                                        @LoginMember Member member,
-                                        @PageableDefault(size = 1) Pageable pageable) {
+      Model model,
+      HttpServletResponse response,
+      @LoginMember Member member,
+      @PageableDefault(size = 1) Pageable pageable) {
     response.setStatus(HttpServletResponse.SC_CONFLICT); // 409 Conflict
 
     Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
@@ -164,10 +160,10 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(EntityNotFoundException.class)
   public String handleEntityNotFoundException(EntityNotFoundException ex,
-                                              Model model,
-                                              HttpServletResponse response,
-                                              @LoginMember Member member,
-                                              @PageableDefault(size = 1) Pageable pageable){
+      Model model,
+      HttpServletResponse response,
+      @LoginMember Member member,
+      @PageableDefault(size = 1) Pageable pageable) {
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     Page<WishItem> wishPage = wishlistService.getWishList(member.getId(), pageable);
     model.addAttribute("wishList", wishPage.getContent());
