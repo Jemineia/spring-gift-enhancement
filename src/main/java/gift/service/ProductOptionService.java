@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.exception.DuplicateOptionException;
+import gift.exception.InsufficientStockException;
 import gift.model.Product;
 import gift.model.ProductOption;
 import gift.repository.ProductOptionRepository;
@@ -26,7 +27,7 @@ public class ProductOptionService {
     return productOptionRepository.findByProductId(productId);
   }
 
-  public ProductOption getOption(Long optionId) {
+  public ProductOption findById(Long optionId) {
     return productOptionRepository.findById(optionId)
         .orElseThrow(() -> new EntityNotFoundException("해당 옵션을 찾을 수 없습니다"));
   }
@@ -54,7 +55,14 @@ public class ProductOptionService {
 
   @Transactional
   public void decreaseQuantity(Long optionId, int amount) {
-    ProductOption productOption = getOption(optionId);
-    productOption.decreaseQuantity(amount);
+    if (amount <= 0) {
+      throw new InsufficientStockException("차감 수량은 1 이상이어야 합니다.", optionId);
+    }
+
+    int updatedRows = productOptionRepository.decreaseQuantity(optionId, amount);
+    if (updatedRows == 0) {
+      throw new InsufficientStockException("차감 수량이 현재 재고보다 많습니다.", optionId);
+    }
   }
+
 }

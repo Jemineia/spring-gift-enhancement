@@ -30,7 +30,7 @@ public class ProductOption {
   private String option;
 
   @Min(value = 1, message = "옵션 수량은 최소 1개 이상이어야 합니다.")
-  @Max(value = 99999999, message = "옵션 수량은 1억 이하이어야 합니다.")
+  @Max(value = 99999999, message = "옵션 수량은 1억 미만이어야 합니다.")
   @Column(nullable = false)
   private int quantity;
 
@@ -63,12 +63,5 @@ public class ProductOption {
 
   public Product getProduct() {
     return product;
-  }
-
-  public void decreaseQuantity(int amount) {
-    if (this.quantity < amount) {
-      throw new IllegalStateException("현재 옵션 수 보다 더 크게 낮출 수 없습니다");
-    }
-    this.quantity -= amount;
   }
 }

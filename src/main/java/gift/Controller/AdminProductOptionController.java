@@ -30,7 +30,7 @@ public class AdminProductOptionController {
     this.productService = productService;
   }
 
-  // 옵션 목록 조회
+  // 옵션 목록
   @GetMapping
   public String list(@PathVariable Long productId, Model model) {
     Product product = productService.findById(productId)
@@ -39,7 +39,6 @@ public class AdminProductOptionController {
     List<ProductOption> options = productOptionService.findOptionsByProductId(productId);
     model.addAttribute("product", product);
     model.addAttribute("options", options);
-
     return "admin/options/list";
   }
 
