@@ -182,7 +182,7 @@ public class GlobalExceptionHandler {
   public String handleDuplicateOptionException(DuplicateOptionException ex,
       Model model,
       HttpServletResponse response) {
-    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    response.setStatus(HttpServletResponse.SC_CONFLICT);
     model.addAttribute("errorMessage", ex.getMessage());
     return "admin/options/new";  // 옵션 입력 form 페이지 경로
   }
