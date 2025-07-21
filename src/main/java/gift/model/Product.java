@@ -1,6 +1,8 @@
 package gift.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -73,5 +75,18 @@ public class Product {
     this.name = name;
     this.price = price;
     this.imageUrl = imageUrl;
+  }
+
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ProductOption> options = new ArrayList<ProductOption>();
+
+
+  public void addOption(ProductOption option) {
+    boolean duplicated = options.stream()
+        .anyMatch(o -> o.getOption().equals(option.getOption()));
+    if (duplicated) {
+      throw new IllegalArgumentException("동일한 이름의 옵션은 추가할 수 없습니다.");
+    }
+    options.add(option);
   }
 }
