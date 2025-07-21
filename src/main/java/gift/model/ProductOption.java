@@ -4,29 +4,38 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "product_option")
 public class ProductOption {
+
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private Product product;
 
+  @Size(max = 50, message = "옵션명은 최대 50자까지 입력할 수 있습니다.")
   @Column(length = 50, nullable = false)
-  @Pattern(regexp = "^[\\w\\s\\(\\)\\[\\]\\+\\-\\&\\/]{1,50}$")
+  @Pattern(regexp = "^[가-힣a-zA-Z0-9 \\(\\)\\[\\]\\+\\-\\&/_]+$", message = "옵션명에 허용되지 않은 문자가 포함되어 있습니다.")
   private String option;
 
+  @Min(value = 1, message = "옵션 수량은 최소 1개 이상이어야 합니다.")
+  @Max(value = 99999999, message = "옵션 수량은 1억 이하이어야 합니다.")
   @Column(nullable = false)
   private int quantity;
 
-  public ProductOption() {}
+  public ProductOption() {
+  }
 
   public ProductOption(Product product, String option, int quantity) {
     this.product = product;
@@ -43,14 +52,23 @@ public class ProductOption {
   public long getId() {
     return id;
   }
-  public String getOption(){
+
+  public String getOption() {
     return option;
   }
+
   public int getQuantity() {
     return quantity;
   }
 
-  public void getProduct(Product product) {
-    this.product = product;
+  public Product getProduct() {
+    return product;
+  }
+
+  public void decreaseQuantity(int amount) {
+    if (this.quantity < amount) {
+      throw new IllegalStateException("현재 옵션 수 보다 더 크게 낮출 수 없습니다");
+    }
+    this.quantity -= amount;
   }
 }

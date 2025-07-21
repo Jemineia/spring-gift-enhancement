@@ -28,7 +28,7 @@
 - [x] Update Method에 EntityNotFoundException 적용
 - [x] TestCode 중복 체크 제거
 - [x] 도메인 객체 테스트 코드 작성
-- [ ] Application 실행 안해도 테스트 수행 가능하도록 수정
+- [x] Application 실행 안해도 테스트 수행 가능하도록 수정
   - [x] MemberControllerTest를 MockMvc Test로 수정
   - [x] ProductControllerTest를 MockMvc Test로 수정
   - [x] WishlistControllerTest를 MockMvc Test로 수정
@@ -37,9 +37,9 @@
 
 ### step3 [ 07/21 ]
 - [x] 모델과 DB에 옵션 추가
-- [ ] 옵션에 대한 제약사항 추가
-  - [ ] 공백포함 최대길이는 50자
-  - [ ] 일부 특수문자만 사용가능
-  - [ ] 옵션 수량은 최소1, 최대 1억
-  - [ ] 동일 상품 내 중복 옵션 불가
-- [ ] 옵션 수량 삭제 기능 추가
+- [x] 옵션에 대한 제약사항 추가
+  - [x] 공백포함 최대 길이는 50자
+  - [x] 일부 특수문자만 사용가능
+  - [x] 옵션 수량은 최소 1, 최대 1억
+  - [x] 동일 상품 내 중복 옵션 불가
+- [ ] 옵션 수량 감소 기능 추가
