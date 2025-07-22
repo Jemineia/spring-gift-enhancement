@@ -6,6 +6,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
@@ -22,6 +23,7 @@ public class ProductOption {
   private long id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "product_id", nullable = false)
   private Product product;
 
   @Size(max = 50, message = "옵션명은 최대 50자까지 입력할 수 있습니다.")
@@ -53,7 +55,7 @@ public class ProductOption {
     return id;
   }
 
-  public String getOption() {
+  public String getName() {
     return option;
   }
 
@@ -63,5 +65,9 @@ public class ProductOption {
 
   public Product getProduct() {
     return product;
+  }
+
+  public void setProduct(Product product) {
+    this.product = product;
   }
 }

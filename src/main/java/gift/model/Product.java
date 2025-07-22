@@ -87,12 +87,17 @@ public class Product {
     this.imageUrl = imageUrl;
   }
 
+  public List<ProductOption> getOptions() {
+    return options;
+  }
+
   public void addOption(ProductOption option) {
     boolean duplicated = options.stream()
-        .anyMatch(o -> o.getOption().equals(option.getOption()));
+        .anyMatch(o -> o.getName().equals(option.getName()));
     if (duplicated) {
       throw new IllegalArgumentException("동일한 이름의 옵션은 추가할 수 없습니다.");
     }
     options.add(option);
+    option.setProduct(this);
   }
 }

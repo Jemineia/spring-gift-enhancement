@@ -61,7 +61,7 @@ public class AdminProductOptionController {
       return "admin/options/new";
     }
 
-    productOptionService.save(productId, form.getOption(), form.getQuantity());
+    productOptionService.save(productId, form.getName(), form.getQuantity());
     return "redirect:/admin/products/{productId}/options";
   }
 }
