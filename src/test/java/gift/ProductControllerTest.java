@@ -26,12 +26,17 @@ public class ProductControllerTest {
     String name = "초코파이";
     int price = 5700;
     String imageUrl = "https://example.com/image.jpg";
+    String option = "추석 선물용 500KG";
+    int optionQuantity = 72;
+
 
     mockMvc.perform(post("/admin/products")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .queryParam("name", name)
             .queryParam("price", String.valueOf(price))
             .queryParam("imageUrl", imageUrl)
+            .param("options[0].name", option)
+            .param("options[0].quantity", String.valueOf(optionQuantity))
         )
         .andExpect(status().isFound()); // redirect되어 list로 넘어가므로
   }
@@ -41,14 +46,19 @@ public class ProductControllerTest {
   void overLength_ProductName() throws Exception{
     // given
     String name = "초코파이는15자가넘을까요안넘을까요";
+
     int price = 5700;
     String imageUrl = "https://example.com/image.jpg";
+    String option = "추석 선물용 500KG";
+    int optionQuantity = 72;
 
     mockMvc.perform(post("/admin/products")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .queryParam("name", name)
             .queryParam("price", String.valueOf(price))
             .queryParam("imageUrl", imageUrl)
+            .param("options[0].name", option)
+            .param("options[0].quantity", String.valueOf(optionQuantity))
         )
         .andExpect(status().isBadRequest());
   }
@@ -58,14 +68,19 @@ public class ProductControllerTest {
   void invalidHyperText_ProductName() throws  Exception{
     // given
     String name = "초코파이!@#$%**";
+
     int price = 5700;
     String imageUrl = "https://example.com/image.jpg";
+    String option = "추석 선물용 500KG";
+    int optionQuantity = 72;
 
     mockMvc.perform(post("/admin/products")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .queryParam("name", name)
             .queryParam("price", String.valueOf(price))
             .queryParam("imageUrl", imageUrl)
+            .param("options[0].name", option)
+            .param("options[0].quantity", String.valueOf(optionQuantity))
         )
         .andExpect(status().isBadRequest());
   }
@@ -75,14 +90,19 @@ public class ProductControllerTest {
   void invalidWord_ProductName() throws  Exception {
     // given
     String name = "카카오 초코파이";
+
     int price = 5700;
     String imageUrl = "https://example.com/image.jpg";
+    String option = "추석 선물용 500KG";
+    int optionQuantity = 72;
 
     mockMvc.perform(post("/admin/products")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .queryParam("name", name)
             .queryParam("price", String.valueOf(price))
             .queryParam("imageUrl", imageUrl)
+            .param("options[0].name", option)
+            .param("options[0].quantity", String.valueOf(optionQuantity))
         )
         .andExpect(status().isBadRequest());
   }
@@ -91,8 +111,30 @@ public class ProductControllerTest {
   @DisplayName("[Product.price] 음수 가격 삽입")
   void minusPrice_ProductPrice() throws  Exception{
     // given
-    String name = "초코파이";
     int price = -7200;
+
+    String name = "초코파이";
+    String imageUrl = "https://example.com/image.jpg";
+    String option = "추석 선물용 500KG";
+    int optionQuantity = 72;
+
+    mockMvc.perform(post("/admin/products")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .queryParam("name", name)
+            .queryParam("price", String.valueOf(price))
+            .queryParam("imageUrl", imageUrl)
+            .param("options[0].name", option)
+            .param("options[0].quantity", String.valueOf(optionQuantity))
+        )
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("[Product.option] 옵션을 비우고 상품 등록")
+  void inValidOptionInsert() throws  Exception{
+    // given
+    int price = 7200;
+    String name = "초코파이";
     String imageUrl = "https://example.com/image.jpg";
 
     mockMvc.perform(post("/admin/products")

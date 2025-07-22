@@ -52,3 +52,4 @@
 - [x] JPA를 활용해 객체간 관계를 사용해 save하도록 구조 변경
 - [x] 재고 차감 @Query 대신 다른 방법으로 변경
 - [x] 옵션명 option->name으로 변경
+- [x] 옵션 관련 Domain Test 추가 및 기존 ProductControllerTest 코드 수정
