@@ -45,7 +45,7 @@
 - [x] 옵션 수량 감소 기능 추가
 
 ### Step3 Refactoring [ 07/22 ]
-- [ ] 필드끼리 위치하도록 model 수정
+- [x] 필드끼리 위치하도록 model 수정
 - [ ] model 기본생성자 protected로 변경
 - [ ] 상품-옵션 함께 생성되도록 ProductService 변경
 - [x] 중복 옵션 체크 메서드 private로 변경

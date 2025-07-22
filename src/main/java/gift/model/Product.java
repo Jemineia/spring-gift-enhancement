@@ -1,6 +1,13 @@
 package gift.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +27,9 @@ public class Product {
 
   @Column(name = "image_url", nullable = false)
   private String imageUrl;
+
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ProductOption> options = new ArrayList<ProductOption>();
 
   public Product() {
   }
@@ -76,10 +86,6 @@ public class Product {
     this.price = price;
     this.imageUrl = imageUrl;
   }
-
-  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<ProductOption> options = new ArrayList<ProductOption>();
-
 
   public void addOption(ProductOption option) {
     boolean duplicated = options.stream()
