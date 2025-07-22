@@ -34,7 +34,7 @@ public class ProductOption {
   @Column(nullable = false)
   private int quantity;
 
-  public ProductOption() {
+  protected ProductOption() {
   }
 
   public ProductOption(Product product, String option, int quantity) {

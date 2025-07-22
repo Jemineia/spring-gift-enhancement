@@ -47,12 +47,4 @@ create table if not exists product_option
 
     constraint ck_option_quantity_range
     check (quantity >= 1 and quantity < 100000000)
-=======
-
-    constraint fk_wish_member_id_ref_member_id
-    foreign key (member_id) references member,
-
-    constraint fk_wish_product_id_ref_product_id
-    foreign key (product_id) references product
-
     );
