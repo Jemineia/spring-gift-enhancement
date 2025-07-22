@@ -53,3 +53,4 @@
 - [x] 재고 차감 @Query 대신 다른 방법으로 변경
 - [x] 옵션명 option->name으로 변경
 - [x] 옵션 관련 Domain Test 추가 및 기존 ProductControllerTest 코드 수정
+  - [x] 일부 상황에서 Product삽입 테스트 실패하는 경우를 해결
