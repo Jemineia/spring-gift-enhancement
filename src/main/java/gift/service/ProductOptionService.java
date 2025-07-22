@@ -56,13 +56,16 @@ public class ProductOptionService {
   @Transactional
   public void decreaseQuantity(Long optionId, int amount) {
     if (amount <= 0) {
-      throw new InsufficientStockException("차감 수량은 1 이상이어야 합니다.", optionId);
+      throw new IllegalArgumentException("차감 수량은 0보다 커야 합니다.");
     }
 
-    int updatedRows = productOptionRepository.decreaseQuantity(optionId, amount);
-    if (updatedRows == 0) {
-      throw new InsufficientStockException("차감 수량이 현재 재고보다 많습니다.", optionId);
+    ProductOption option = productOptionRepository.findById(optionId)
+        .orElseThrow(() -> new EntityNotFoundException("옵션을 찾을 수 없습니다."));
+
+    if (option.getQuantity() < amount) {
+      throw new InsufficientStockException("재고가 부족합니다.", optionId);
     }
+
+    option.setQuantity(option.getQuantity() - amount);
   }
-
 }

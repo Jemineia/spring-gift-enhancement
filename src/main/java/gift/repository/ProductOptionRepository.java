@@ -13,8 +13,4 @@ public interface ProductOptionRepository extends JpaRepository<ProductOption, Lo
 
   boolean existsByProductIdAndOption(Long productId, String optionName);
 
-  @Modifying
-  @Query("UPDATE ProductOption po SET po.quantity = po.quantity - :amount WHERE po.id = :optionId AND po.quantity >= :amount")
-  int decreaseQuantity(@Param("optionId") Long optionId, @Param("amount") int amount);
-
 }

@@ -26,7 +26,7 @@
     <tr th:each="option : ${options}">
       <td th:text="${option.id}"></td>
       <td th:text="${option.product.name}"></td>
-      <td th:text="${option.option}"></td>
+      <td th:text="${option.name}"></td>
       <td th:text="${option.quantity}"></td>
       <td>
         <a th:href="@{|/admin/options/${option.id}/edit|}" class="btn btn-sm btn-outline-secondary">재고 수정</a>

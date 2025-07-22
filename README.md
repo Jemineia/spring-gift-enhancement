@@ -49,6 +49,6 @@
 - [x] model 기본생성자 protected로 변경
 - [x] 상품-옵션 함께 생성되도록 ProductService 변경
 - [x] 중복 옵션 체크 메서드 private로 변경
-- [ ] JPA를 활용해 객체간 관계를 사용해 save하도록 구조 변경
-- [ ] 재고 차감 @Query 대신 다른 방법으로 변경
-- [ ] 옵션명 option->name으로 변경
+- [x] JPA를 활용해 객체간 관계를 사용해 save하도록 구조 변경
+- [x] 재고 차감 @Query 대신 다른 방법으로 변경
+- [x] 옵션명 option->name으로 변경
