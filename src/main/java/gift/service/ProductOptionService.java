@@ -32,7 +32,7 @@ public class ProductOptionService {
         .orElseThrow(() -> new EntityNotFoundException("해당 옵션을 찾을 수 없습니다"));
   }
 
-  public void validateDuplicateOption(Long productId, String optionName) {
+  private void validateDuplicateOption(Long productId, String optionName) {
     boolean exists = productOptionRepository.existsByProductIdAndOption(productId, optionName);
     if (exists) {
       throw new DuplicateOptionException("같은 상품에 이미 존재하는 옵션명입니다.");
